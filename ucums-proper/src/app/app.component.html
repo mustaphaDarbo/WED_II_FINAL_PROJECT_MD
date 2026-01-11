@@ -1,0 +1,40 @@
+<div style="padding: 20px; font-family: Arial, sans-serif; background: #f5f7fa; min-height: 100vh;">
+  <header style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; text-align: center;">
+    <h1 style="color: #2c3e50; margin: 0; font-size: 2.5rem;">🎓 UCUMS</h1>
+    <p style="color: #7f8c8d; margin: 5px 0 0 0; font-size: 1.1rem;">University Content Management System</p>
+    
+    <!-- Navigation when not logged in -->
+    <div *ngIf="!isLoggedIn" style="margin-top: 20px;">
+      <a routerLink="/login" style="color: #3498db; text-decoration: none; font-weight: 500; margin-right: 15px; padding: 10px 20px; border-radius: 6px; transition: all 0.3s ease; background: #3498db; color: white;">
+        🔐 Login
+      </a>
+    </div>
+    
+    <!-- Navigation when logged in -->
+    <div *ngIf="isLoggedIn" style="margin-top: 20px;">
+      <span style="margin-right: 15px; color: #27ae60; font-weight: 600;">
+        👤 Welcome, {{currentUser?.fullName || 'User'}}!
+      </span>
+      
+      <!-- Role-based navigation -->
+      <a routerLink="/student-dashboard" *ngIf="getUserRole() === 'student'" style="color: #3498db; text-decoration: none; font-weight: 500; margin-right: 15px; padding: 8px 16px; border-radius: 6px; transition: all 0.3s ease; background: #3498db; color: white;">
+        👨‍🎓 Student Dashboard
+      </a>
+      
+      <a routerLink="/lecturer-dashboard" *ngIf="getUserRole() === 'lecturer'" style="color: #9b59b6; text-decoration: none; font-weight: 500; margin-right: 15px; padding: 8px 16px; border-radius: 6px; transition: all 0.3s ease; background: #9b59b6; color: white;">
+        👨‍🏫 Lecturer Dashboard
+      </a>
+      
+      <a routerLink="/admin-dashboard" *ngIf="getUserRole() === 'admin'" style="color: #e74c3c; text-decoration: none; font-weight: 500; margin-right: 15px; padding: 8px 16px; border-radius: 6px; transition: all 0.3s ease; background: #e74c3c; color: white;">
+        ⚙️ Admin Dashboard
+      </a>
+      
+      <button (click)="logout()" style="color: #95a5a6; text-decoration: none; font-weight: 500; padding: 8px 16px; border-radius: 6px; transition: all 0.3s ease; background: #95a5a6; color: white; border: none; cursor: pointer;">
+        🚪 Logout
+      </button>
+    </div>
+  </header>
+  
+  <!-- Router Outlet for Angular Routing -->
+  <router-outlet></router-outlet>
+</div>

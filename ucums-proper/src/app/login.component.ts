@@ -1,0 +1,94 @@
+import { Component } from '@angular/core';
+import { DatabaseService, User } from './database.service';
+
+@Component({
+  selector: 'app-login',
+  template: `
+    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: 400px; margin: 0 auto;">
+      <h2 style="color: #2c3e50; text-align: center; margin: 0 0 30px 0;">🔐 Login to UCUMS</h2>
+      
+      <div *ngIf="loginMessage" [style]="loginMessageStyle" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center;">
+        <p [innerHTML]="loginMessage"></p>
+      </div>
+      
+      <form (ngSubmit)="login()">
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500;">📧 Email:</label>
+          <input type="email" [(ngModel)]="email" name="email" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;" placeholder="Enter your email" required>
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500;">🔒 Password:</label>
+          <input type="password" [(ngModel)]="password" name="password" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;" placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" [disabled]="isLoading" style="background: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 500; width: 100%;">
+          {{isLoading ? '🔄 Logging in...' : '🚀 Login'}}
+        </button>
+      </form>
+      
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center;">
+        <p style="margin: 0 0 10px 0; color: #7f8c8d;">🎯 Default Admin Credentials:</p>
+        <p style="margin: 0; color: #2c3e50; font-family: monospace; font-size: 0.9rem;">admin@ucums.edu / admin123</p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    input:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+  `]
+})
+export class LoginComponent {
+  email = '';
+  password = '';
+  loginMessage = '';
+  loginMessageStyle = '';
+  isLoading = false;
+  
+  constructor(private databaseService: DatabaseService) {}
+  
+  login() {
+    this.isLoading = true;
+    this.loginMessage = '';
+    
+    this.databaseService.authenticateUser(this.email, this.password).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        
+        if (response && response.success && response.user) {
+          const user = response.user;
+          this.loginMessage = `✅ Login successful! Welcome ${user.fullName || user.fullname || 'User'}! Redirecting to ${user.role} dashboard...`;
+          this.loginMessageStyle = 'color: #155724; background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 6px;';
+          
+          // Store login state
+          localStorage.setItem('userToken', response.token);
+          localStorage.setItem('userRole', user.role);
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          
+          // Redirect based on role
+          setTimeout(() => {
+            window.location.href = `/${user.role}-dashboard`;
+          }, 1500);
+        } else {
+          this.loginMessage = '❌ Login failed. Invalid email or password.';
+          this.loginMessageStyle = 'color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 6px;';
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.loginMessage = '❌ Login error. Please check your connection and try again.';
+        this.loginMessageStyle = 'color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 6px;';
+        console.error('Login error:', error);
+      }
+    });
+  }
+}
