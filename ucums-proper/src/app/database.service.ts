@@ -16,7 +16,7 @@ export interface User {
   providedIn: 'root'
 })
 export class DatabaseService {
-  private readonly API_URL = 'http://localhost:5000/api';
+  private readonly API_URL = 'https://wed-ii-final-project-md.onrender.com/api';
   
   constructor(private http: HttpClient) {}
   
