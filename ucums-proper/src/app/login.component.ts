@@ -26,11 +26,6 @@ import { DatabaseService, User } from './database.service';
           {{isLoading ? '🔄 Logging in...' : '🚀 Login'}}
         </button>
       </form>
-      
-      <div style="background: #f8f9fa; padding: clamp(12px, 3vw, 15px); border-radius: 6px; margin-top: 20px; text-align: center;">
-        <p style="margin: 0 0 10px 0; color: #7f8c8d; font-size: clamp(0.9rem, 2.5vw, 1rem);">🎯 Default Admin Credentials:</p>
-        <p style="margin: 0; color: #2c3e50; font-family: monospace; font-size: clamp(0.8rem, 2vw, 0.9rem); word-break: break-all;">admin@ucums.edu / admin123</p>
-      </div>
     </div>
   `,
   styles: [`
