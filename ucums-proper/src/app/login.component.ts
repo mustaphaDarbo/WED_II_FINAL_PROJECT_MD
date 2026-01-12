@@ -4,32 +4,32 @@ import { DatabaseService, User } from './database.service';
 @Component({
   selector: 'app-login',
   template: `
-    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: 400px; margin: 0 auto;">
-      <h2 style="color: #2c3e50; text-align: center; margin: 0 0 30px 0;">🔐 Login to UCUMS</h2>
+    <div style="background: white; padding: clamp(20px, 5vw, 30px); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px; max-width: clamp(300px, 80vw, 400px); margin: 0 auto;">
+      <h2 style="color: #2c3e50; text-align: center; margin: 0 0 clamp(20px, 5vw, 30px) 0; font-size: clamp(1.5rem, 4vw, 2rem);">🔐 Login to UCUMS</h2>
       
-      <div *ngIf="loginMessage" [style]="loginMessageStyle" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center;">
+      <div *ngIf="loginMessage" [style]="loginMessageStyle" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-size: clamp(0.9rem, 2.5vw, 1rem);">
         <p [innerHTML]="loginMessage"></p>
       </div>
       
       <form (ngSubmit)="login()">
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500;">📧 Email:</label>
-          <input type="email" [(ngModel)]="email" name="email" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;" placeholder="Enter your email" required>
+        <div style="margin-bottom: clamp(15px, 4vw, 20px);">
+          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500; font-size: clamp(0.9rem, 2.5vw, 1rem);">📧 Email:</label>
+          <input type="email" [(ngModel)]="email" name="email" style="width: 100%; padding: clamp(10px, 3vw, 12px); border: 2px solid #ddd; border-radius: 6px; font-size: clamp(0.9rem, 2.5vw, 1rem);" placeholder="Enter your email" required>
         </div>
         
-        <div style="margin-bottom: 25px;">
-          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500;">🔒 Password:</label>
-          <input type="password" [(ngModel)]="password" name="password" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;" placeholder="Enter your password" required>
+        <div style="margin-bottom: clamp(20px, 5vw, 25px);">
+          <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 500; font-size: clamp(0.9rem, 2.5vw, 1rem);">🔒 Password:</label>
+          <input type="password" [(ngModel)]="password" name="password" style="width: 100%; padding: clamp(10px, 3vw, 12px); border: 2px solid #ddd; border-radius: 6px; font-size: clamp(0.9rem, 2.5vw, 1rem);" placeholder="Enter your password" required>
         </div>
         
-        <button type="submit" [disabled]="isLoading" style="background: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 500; width: 100%;">
+        <button type="submit" [disabled]="isLoading" style="background: #3498db; color: white; padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 24px); border: none; border-radius: 6px; cursor: pointer; font-size: clamp(0.9rem, 2.5vw, 1rem); font-weight: 500; width: 100%; min-height: 44px;">
           {{isLoading ? '🔄 Logging in...' : '🚀 Login'}}
         </button>
       </form>
       
-      <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; text-align: center;">
-        <p style="margin: 0 0 10px 0; color: #7f8c8d;">🎯 Default Admin Credentials:</p>
-        <p style="margin: 0; color: #2c3e50; font-family: monospace; font-size: 0.9rem;">admin@ucums.edu / admin123</p>
+      <div style="background: #f8f9fa; padding: clamp(12px, 3vw, 15px); border-radius: 6px; margin-top: 20px; text-align: center;">
+        <p style="margin: 0 0 10px 0; color: #7f8c8d; font-size: clamp(0.9rem, 2.5vw, 1rem);">🎯 Default Admin Credentials:</p>
+        <p style="margin: 0; color: #2c3e50; font-family: monospace; font-size: clamp(0.8rem, 2vw, 0.9rem); word-break: break-all;">admin@ucums.edu / admin123</p>
       </div>
     </div>
   `,
@@ -44,6 +44,44 @@ import { DatabaseService, User } from './database.service';
     button:disabled {
       background: #95a5a6;
       cursor: not-allowed;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      input {
+        padding: 14px;
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+      
+      button {
+        padding: 14px 20px;
+        min-height: 48px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      input {
+        padding: 16px;
+        font-size: 16px;
+      }
+      
+      button {
+        padding: 16px 24px;
+        min-height: 52px;
+      }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      input {
+        min-height: 44px;
+        font-size: 16px;
+      }
+      
+      button {
+        min-height: 44px;
+        min-width: 44px;
+      }
     }
   `]
 })
