@@ -62,7 +62,7 @@ import { DatabaseService } from './database.service';
                   <div style="color: #7f8c8d; font-size: 0.8rem;">Credits</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="color: #3498db; font-size: 1.8rem; font-weight: 700;">{{course.enrolledStudents?.length || 0}}</div>
+                  <div style="color: #3498db; font-size: 1.8rem; font-weight: 700;">{{course.enrolledCount || course.enrolledStudents?.length || 0}}</div>
                   <div style="color: #7f8c8d; font-size: 0.8rem;">Students</div>
                 </div>
               </div>
@@ -157,16 +157,40 @@ export class LecturerDashboardComponent implements OnInit {
     this.isLoading = true;
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     
+    // Load dashboard statistics
+    this.databaseService.getLecturerDashboard(currentUser.id).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.stats = response.data;
+        }
+      },
+      error: (error: any) => {
+        console.error('Error loading dashboard stats:', error);
+      }
+    });
+
     // Load lecturer's courses
     this.databaseService.getLecturerCourses(currentUser.id).subscribe({
       next: (response: any) => {
         this.myCourses = response.data || [];
-        this.calculateStats();
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Error loading dashboard data:', error);
-        this.isLoading = false;
+        console.error('Error loading courses:', error);
+        // Fallback to general courses endpoint if lecturer endpoint fails
+        this.databaseService.getCourses().subscribe({
+          next: (response: any) => {
+            // Filter courses where current lecturer is assigned
+            this.myCourses = response.data?.filter((course: any) => 
+              course.lecturerId?._id === currentUser.id || course.lecturerId === currentUser.id
+            ) || [];
+            this.isLoading = false;
+          },
+          error: (fallbackError: any) => {
+            console.error('Error loading courses (fallback):', fallbackError);
+            this.isLoading = false;
+          }
+        });
       }
     });
   }

@@ -16,7 +16,7 @@ export interface User {
   providedIn: 'root'
 })
 export class DatabaseService {
-  private readonly API_URL = 'https://wed-ii-final-project-md.onrender.com/api';
+  private readonly API_URL = 'http://localhost:5000/api';
   
   constructor(private http: HttpClient) {}
   
@@ -143,5 +143,14 @@ export class DatabaseService {
 
   getCourseStudents(courseId: string): Observable<any> {
     return this.http.get<any>(`${this.API_URL}/courses/${courseId}/students`, { headers: this.getAuthHeaders() });
+  }
+
+  // Lecturer specific methods
+  getLecturerCourses(lecturerId: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/lecturers/${lecturerId}/courses`, { headers: this.getAuthHeaders() });
+  }
+
+  getLecturerDashboard(lecturerId: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/lecturers/${lecturerId}/dashboard`, { headers: this.getAuthHeaders() });
   }
 }

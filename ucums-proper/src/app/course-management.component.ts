@@ -193,7 +193,7 @@ export class CourseManagementComponent {
     courseCode: '',
     title: '',
     description: '',
-    lecturerId: '696380545e906b0cbf32f79a', // Default to Supperadmin
+    lecturerId: '',
     creditUnits: null,
     semester: '',
     academicYear: '',
@@ -257,7 +257,7 @@ export class CourseManagementComponent {
             courseCode: '',
             title: '',
             description: '',
-            lecturerId: '',
+            lecturerId: this.lecturers.length > 0 ? this.lecturers[0]._id : '',
             creditUnits: null,
             semester: '',
             academicYear: '',
