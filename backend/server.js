@@ -39,15 +39,31 @@ const limiter = rateLimit({
 // Middlewares
 app.use(helmet()); // Security headers
 app.use(limiter); // Rate limiting
-app.use(cors({
-  origin: [
+
+// More permissive CORS for development
+app.use((req, res, next) => {
+  const allowedOrigins = [
     'http://localhost:4200', 
     'http://127.0.0.1:4200',
     'https://wed-ii-final-project-md.vercel.app',
     'https://wed-ii-final-project-md-git-main-mustaphadarbos-projects.vercel.app'
-  ],
-  credentials: true
-})); // Enable CORS with specific origins
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin) || origin && origin.endsWith('.vercel.app')) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json()); // Body parser
 app.use(express.urlencoded({ extended: false }));
 
