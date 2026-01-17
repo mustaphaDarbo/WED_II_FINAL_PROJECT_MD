@@ -40,7 +40,12 @@ const limiter = rateLimit({
 app.use(helmet()); // Security headers
 app.use(limiter); // Rate limiting
 app.use(cors({
-  origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
+  origin: [
+    'http://localhost:4200', 
+    'http://127.0.0.1:4200',
+    'https://wed-ii-final-project-md.vercel.app',
+    'https://wed-ii-final-project-md-git-main-mustaphadarbos-projects.vercel.app'
+  ],
   credentials: true
 })); // Enable CORS with specific origins
 app.use(express.json()); // Body parser
