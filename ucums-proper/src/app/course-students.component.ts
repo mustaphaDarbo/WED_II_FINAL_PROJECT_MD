@@ -25,7 +25,7 @@ import { ActivatedRoute } from '@angular/router';
             <div *ngFor="let student of students" style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
               <div style="display: flex; align-items: center; margin-bottom: 15px;">
                 <div *ngIf="student.profileImage" style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; margin-right: 15px;">
-                  <img [src]="'http://localhost:5000' + student.profileImage" [alt]="student.fullName" style="width: 100%; height: 100%; object-fit: cover;">
+                  <img [src]="'https://wed-ii-final-project-md.onrender.com' + student.profileImage" [alt]="student.fullName" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div *ngIf="!student.profileImage" style="width: 50px; height: 50px; border-radius: 50%; background: #ecf0f1; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #7f8c8d; font-size: 1.2rem;">
                   {{student.fullName?.charAt(0) || 'S'}}

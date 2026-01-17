@@ -18,7 +18,7 @@ import { DatabaseService } from './database.service';
             *ngIf="profile.profileImage" 
             style="width: 200px; height: 200px; border-radius: 50%; margin: 0 auto 20px; overflow: hidden; border: 4px solid #3498db;">
             <img 
-              [src]="'http://localhost:5000' + profile.profileImage" 
+              [src]="'https://wed-ii-final-project-md.onrender.com' + profile.profileImage" 
               [alt]="profile.fullName"
               style="width: 100%; height: 100%; object-fit: cover;"
               (error)="profile.profileImage = ''">

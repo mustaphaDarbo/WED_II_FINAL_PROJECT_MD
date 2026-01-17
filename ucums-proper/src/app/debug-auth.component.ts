@@ -83,7 +83,7 @@ export class DebugAuthComponent {
     
     // Test direct API call
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:5000/api/users', true);
+    xhr.open('GET', 'https://wed-ii-final-project-md.onrender.com/api/users', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', `Bearer ${this.token}`);
     
