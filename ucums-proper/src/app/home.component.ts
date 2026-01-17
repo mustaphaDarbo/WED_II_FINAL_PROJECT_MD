@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { DatabaseService } from './database.service';
 
 @Component({
   selector: 'app-home',
@@ -111,6 +112,36 @@ import { Component } from '@angular/core';
         </div>
       </div>
       
+      <!-- Articles Section -->
+      <div style="background: white; padding: clamp(40px, 8vw, 80px) 20px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <h2 style="text-align: center; color: #2c3e50; font-size: clamp(1.5rem, 4vw, 2.5rem); margin: 0 0 clamp(30px, 6vw, 60px) 0; font-weight: 700;">
+            📰 Educational Articles
+          </h2>
+          
+          <div *ngIf="isLoadingArticles" style="text-align: center; padding: 50px;">
+            <p style="color: #7f8c8d; font-size: 1.2rem;">🔄 Loading articles...</p>
+          </div>
+          
+          <div *ngIf="!isLoadingArticles" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(20px, 4vw, 40px);">
+            <div *ngFor="let article of articles" style="background: #f8f9fa; padding: clamp(20px, 4vw, 30px); border-radius: 15px; border-left: 4px solid #4facfe; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+              <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: clamp(1.2rem, 3vw, 1.5rem); font-weight: 600;">{{article.title}}</h3>
+              <p style="color: #7f8c8d; margin: 0 0 15px 0; line-height: 1.6; font-size: clamp(0.9rem, 2.5vw, 1rem);">{{article.content | slice:0:150}}...</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <span style="color: #4facfe; font-size: clamp(0.8rem, 2vw, 0.9rem); font-weight: 500;">📅 {{formatDate(article.createdAt)}}</span>
+                <span style="color: #27ae60; font-size: clamp(0.8rem, 2vw, 0.9rem); font-weight: 500;">✏️ {{article.author}}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="articles.length === 0 && !isLoadingArticles" style="text-align: center; padding: 50px; background: #f8f9fa; border-radius: 15px; border: 2px dashed #e0e0e0;">
+            <div style="font-size: 3rem; margin-bottom: 15px;">📰</div>
+            <p style="color: #7f8c8d; font-size: 1.2rem; margin: 0;">No articles available at the moment.</p>
+            <p style="color: #95a5a6; font-size: 1rem; margin: 10px 0 0 0;">Check back later for new educational content.</p>
+          </div>
+        </div>
+      </div>
+      
       <!-- Footer -->
       <div style="background: #2c3e50; color: white; padding: clamp(25px, 5vw, 40px) 20px; text-align: center;">
         <p style="margin: 0 0 15px 0; font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 600;">
@@ -163,8 +194,39 @@ import { Component } from '@angular/core';
     }
   `]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   imageError = false;
+  articles: any[] = [];
+  isLoadingArticles = false;
+
+  constructor(private databaseService: DatabaseService) {}
+
+  ngOnInit() {
+    this.loadArticles();
+  }
+
+  loadArticles() {
+    this.isLoadingArticles = true;
+    this.databaseService.getArticles().subscribe({
+      next: (response: any) => {
+        this.articles = response.data || [];
+        this.isLoadingArticles = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading articles:', error);
+        this.isLoadingArticles = false;
+      }
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
 
   goToLogin() {
     window.location.href = '/login';

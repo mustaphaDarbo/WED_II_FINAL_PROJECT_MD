@@ -135,10 +135,16 @@ export class StudentDashboardComponent implements OnInit {
     this.isLoading = true;
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     
-    // Load enrolled courses
-    this.databaseService.getEnrolledCourses(currentUser.id).subscribe({
+    // Load all courses and filter for student's enrolled courses
+    this.databaseService.getCourses().subscribe({
       next: (response: any) => {
-        this.enrolledCourses = response.data || [];
+        // Get student's enrolled courses from user data or filter by registration
+        this.enrolledCourses = response.data?.filter((course: any) => 
+          course.enrolledStudents?.some((enrollment: any) => 
+            enrollment.student === currentUser.id || enrollment.student?._id === currentUser.id
+          )
+        ) || [];
+        
         this.stats.enrolledCourses = this.enrolledCourses.length;
         
         // Calculate stats

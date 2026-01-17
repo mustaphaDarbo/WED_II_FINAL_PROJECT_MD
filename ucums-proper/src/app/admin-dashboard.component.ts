@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { DatabaseService } from './database.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -6,28 +7,33 @@ import { Component } from '@angular/core';
     <div style="background: white; padding: clamp(20px, 5vw, 30px); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
       <h2 style="color: #2c3e50; margin-bottom: clamp(20px, 5vw, 30px); font-size: clamp(1.5rem, 4vw, 2rem);">⚙️ Admin Dashboard</h2>
       
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: clamp(15px, 3vw, 20px); margin-bottom: clamp(25px, 5vw, 40px);">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
-          <div style="font-size: clamp(2rem, 5vw, 3rem);">👥</div>
-          <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalUsers}}</div>
-          <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Users</p>
-          <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">{{stats.activeUsers}} active</small>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
-          <div style="font-size: clamp(2rem, 5vw, 3rem);">📚</div>
-          <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalCourses}}</div>
-          <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Courses</p>
-          <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">All active</small>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
-          <div style="font-size: clamp(2rem, 5vw, 3rem);">📰</div>
-          <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalArticles}}</div>
-          <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Articles</p>
-          <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">Published</small>
-        </div>
+      <div *ngIf="isLoading" style="text-align: center; padding: 50px;">
+        <p style="color: #7f8c8d; font-size: 1.2rem;">🔄 Loading dashboard...</p>
       </div>
+      
+      <div *ngIf="!isLoading">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: clamp(15px, 3vw, 20px); margin-bottom: clamp(25px, 5vw, 40px);">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
+            <div style="font-size: clamp(2rem, 5vw, 3rem);">👥</div>
+            <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalUsers}}</div>
+            <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Users</p>
+            <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">{{stats.activeUsers}} active</small>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
+            <div style="font-size: clamp(2rem, 5vw, 3rem);">📚</div>
+            <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalCourses}}</div>
+            <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Courses</p>
+            <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">All active</small>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: clamp(20px, 4vw, 25px); border-radius: 12px; text-align: center; transition: transform 0.3s ease;">
+            <div style="font-size: clamp(2rem, 5vw, 3rem);">📰</div>
+            <div style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; margin: 10px 0;">{{stats.totalArticles}}</div>
+            <p style="font-size: clamp(0.9rem, 2.5vw, 1rem);">Total Articles</p>
+            <small style="opacity: 0.8; font-size: clamp(0.8rem, 2vw, 0.9rem);">Published</small>
+          </div>
+        </div>
       
       <div style="background: #f8f9fa; padding: clamp(20px, 5vw, 30px); border-radius: 12px;">
         <h3 style="color: #2c3e50; margin-bottom: clamp(20px, 5vw, 25px); font-size: clamp(1.3rem, 3.5vw, 1.8rem);">🎛️ System Management</h3>
@@ -67,16 +73,57 @@ import { Component } from '@angular/core';
     }
   `]
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
   stats = {
-    totalUsers: 5,
-    totalCourses: 4,
-    totalArticles: 12,
-    activeUsers: 4
+    totalUsers: 0,
+    totalCourses: 0,
+    totalArticles: 0,
+    activeUsers: 0
   };
+  isLoading = false;
   showUserManagementSection = false;
   showCourseManagementSection = false;
   showArticleManagementSection = false;
+  
+  constructor(private databaseService: DatabaseService) {}
+
+  ngOnInit() {
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
+    this.isLoading = true;
+    
+    // Load users count
+    this.databaseService.getUsers().subscribe({
+      next: (response: any) => {
+        this.stats.totalUsers = response.users?.length || 0;
+        this.stats.activeUsers = response.users?.filter((user: any) => user.isActive).length || 0;
+      },
+      error: (error) => console.error('Error loading users:', error)
+    });
+
+    // Load courses count
+    this.databaseService.getCourses().subscribe({
+      next: (response: any) => {
+        this.stats.totalCourses = response.data?.length || 0;
+      },
+      error: (error) => console.error('Error loading courses:', error)
+    });
+
+    // Load articles count
+    this.databaseService.getArticles().subscribe({
+      next: (response: any) => {
+        this.stats.totalArticles = response.data?.length || 0;
+      },
+      error: (error) => console.error('Error loading articles:', error)
+    });
+
+    // Stop loading after a short delay
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
+  }
   
   showUserManagement() {
     this.showUserManagementSection = !this.showUserManagementSection;

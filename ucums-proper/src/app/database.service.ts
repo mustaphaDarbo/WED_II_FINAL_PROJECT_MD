@@ -131,7 +131,7 @@ export class DatabaseService {
 
   uploadProfileImage(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.API_URL}/profile/upload-profile-image`, formData, { 
-      headers: this.getAuthHeaders(),
+      headers: this.getAuthHeaders().delete('Content-Type'), // Let browser set multipart/form-data
       reportProgress: true,
       observe: 'events'
     });
@@ -146,10 +146,6 @@ export class DatabaseService {
   }
 
   // Lecturer specific methods
-  getLecturerCourses(lecturerId: string): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/lecturers/${lecturerId}/courses`, { headers: this.getAuthHeaders() });
-  }
-
   getLecturerDashboard(lecturerId: string): Observable<any> {
     return this.http.get<any>(`${this.API_URL}/lecturers/${lecturerId}/dashboard`, { headers: this.getAuthHeaders() });
   }
